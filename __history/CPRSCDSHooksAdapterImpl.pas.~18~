@@ -12,12 +12,13 @@ type
   TWorkerThread = class(TThread)
   private
     httpClient: TIdHTTP;
-    procedure Alert(message: String);
+    procedure HandleResponse(response: String);
   protected
     procedure Execute(); override;
   public
-    constructor Create(data: TStringList);
+    constructor Create();
     destructor Destroy; override;
+    procedure HandleRequest(data: TStringList);
   end;
 
   TCPRSCDSHooksAdapterCoClass = class(TAutoObject, ICPRSCDSHooksAdapterCoClass, ICPRSExtension)
@@ -40,26 +41,31 @@ const
 var
   cprsHandle: String;
 
+threadvar
+  workerThread: TWorkerThread;
+
 // ============== TWorkerThread ==============
 
-constructor TWorkerThread.Create(data: TStringList);
+constructor TWorkerThread.Create();
 begin
-  inherited Create(True);
   FreeOnTerminate := True;
   httpClient := TIdHTTP.Create();
-  Alert('Thread created');
-  httpClient.Request.ContentType := 'application/x-www-form-urlencoded';
-  httpClient.Request.Accept := 'text/plain';
-  httpClient.Post(urlRoot + 'forward', data);
-  data.Free;
-  Start;
+  inherited Create(True);
 end;
 
 destructor TWorkerThread.Destroy();
 begin
-  Alert('Thread destroyed');
   inherited;
   httpClient.Free;
+end;
+
+procedure TWorkerThread.HandleRequest(data: TStringList);
+begin
+  httpClient.Request.ContentType := 'application/x-www-form-urlencoded';
+  httpClient.Request.Accept := 'text/plain';
+  httpClient.Post(urlRoot + 'forward', data);
+  data.Free;
+  Resume;
 end;
 
 procedure TWorkerThread.Execute;
@@ -67,33 +73,29 @@ var
   hookInstance: String;
   response: String;
 begin
-  Alert('Thread started!');
-  httpClient.Request.ContentType := 'text/plain';
+  HandleResponse('Thread started!');
 
   while not Terminated do begin
+    httpClient.Request.ContentType := 'text/plain';
     httpClient.Request.Accept := 'text/plain';
     hookInstance := httpClient.Get(urlRoot + 'next/' + cprsHandle);
-
-    if httpClient.Response.ResponseCode <> 200 then break;
 
     if (hookInstance = '') then begin
       Sleep(500);
     end else begin
       httpClient.Request.Accept := 'application/json';
       response := httpClient.Get(urlRoot + 'response/' + cprsHandle + '/' + hookInstance);
-      Alert(response);
+      HandleResponse(response);
     end;
 
   end;
-
-  Alert('Thread terminated');
 end;
 
-procedure TWorkerThread.Alert(message: String);
+procedure TWorkerThread.HandleResponse(response: String);
 begin
   Queue(procedure
   begin
-    ShowMessage(message);
+    ShowMessage('Got this response: ' + response);
   end);
 end;
 
@@ -102,6 +104,7 @@ end;
 procedure TCPRSCDSHooksAdapterCoClass.Initialize;
 begin
   inherited;
+  if workerThread = nil then workerThread := TWorkerThread.Create;
 end;
 
 destructor TCPRSCDSHooksAdapterCoClass.Destroy;
@@ -144,7 +147,7 @@ begin
     data.AddPair('locationName', CPRSState.LocationName);
 
     ShowMessage('Sending:' + #13 + data.GetText);
-    TWorkerThread.Create(data);
+    workerThread.HandleRequest(data);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);
