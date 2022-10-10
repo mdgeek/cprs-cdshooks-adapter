@@ -1,0 +1,144 @@
+unit CPRSCDSHooksAdapterImpl;
+
+{$WARN SYMBOL_PLATFORM OFF}
+
+interface
+
+uses
+  ComObj, Classes, ActiveX, CPRSCDSHooksAdapter_TLB, StdVcl, Dialogs, CPRSChart_TLB,
+  IdBaseComponent, IdComponent, SysUtils, IdTCPConnection, IdTCPClient, IdHTTP;
+
+type
+  TWorkerThread = class(TThread)
+  private
+    batchId: String;
+    httpClient: TIdHTTP;
+    procedure HandleResponse(response: String);
+  public
+    constructor Create(batchId: String);
+    destructor Destroy; override;
+    procedure Execute();
+  end;
+
+  TCPRSCDSHooksAdapterCoClass = class(TAutoObject, ICPRSCDSHooksAdapterCoClass, ICPRSExtension)
+  private
+    httpClient: TIdHTTP;
+  protected
+    function Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState; const Param1,
+          Param2, Param3: WideString; var Data1, Data2: WideString): WordBool;
+          safecall;
+  public
+    procedure Initialize; override;
+    destructor Destroy; override;
+  end;
+
+implementation
+
+uses ComServ;
+
+var
+    workerThread: TWorkerThread;
+
+const
+  urlRoot = 'http://localhost:8080/cdshooks-demo/cdshooks-proxy/';
+
+// ============== TWorkerThread ==============
+
+constructor TWorkerThread.Create(batchId: String);
+begin
+  Self.batchId := batchId;
+  httpClient := TIdHTTP.Create();
+  httpClient.Request.ContentType := 'text/plain';
+  httpClient.Request.Accept := 'text/plain';
+  inherited Create;
+end;
+
+destructor TWorkerThread.Destroy();
+begin
+  inherited;
+  FreeAndNil(httpClient);
+end;
+
+procedure TWorkerThread.Execute;
+var
+  hookInstance: String;
+  response: String;
+begin
+  while not Terminated do begin
+    hookInstance := httpClient.Get(urlRoot + 'next/' + batchId);
+
+    if httpClient.ResponseCode / 100 <> 2 then
+      break;
+
+    if (httpClient.ResponseCode = 204) then begin
+      Sleep(500);
+    end else begin
+      response := httpClient.Get(urlRoot + 'response/' + batchId + '/' + hookInstance);
+    end;
+
+  end;
+end;
+
+procedure TWorkerThread.HandleResponse(response: String);
+begin
+
+end;
+
+// ============== TCPRSCDSHooksAdapterCoClass ==============
+
+procedure TCPRSCDSHooksAdapterCoClass.Initialize;
+begin
+  inherited;
+  httpClient := TIdHTTP.Create;
+  httpClient.Request.ContentType := 'application/x-www-form-urlencoded';
+  httpClient.Request.Accept := 'text/plain';
+end;
+
+destructor TCPRSCDSHooksAdapterCoClass.Destroy;
+begin
+  inherited;
+  workerThread.Terminate;
+end;
+
+function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState;
+          const Param1, Param2, Param3: WideString; var Data1,
+          Data2: WideString): WordBool;
+var
+  data: TStringList;
+  batchId: String;
+begin
+  if (workerThread <> nil) then begin
+    workerThread.Terminate;
+    FreeAndNil(workerThread);
+  end;
+
+  try
+    data := TStringList.Create;
+    data.Delimiter := #10;
+    data.AddPair('param1', Param1);
+    data.AddPair('param2', Param2);
+    data.AddPair('param3', Param3);
+    data.AddPair('handle', CPRSState.Handle);
+    data.AddPair('userId', CPRSState.UserDUZ);
+    data.AddPair('userName', CPRSState.UserName);
+    data.AddPair('patientId', CPRSState.PatientDFN);
+    data.AddPair('patientName', CPRSState.PatientName);
+    data.AddPair('patientDob', CPRSState.PatientDOB);
+    data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
+    data.AddPair('locationName', CPRSState.LocationName);
+    data.AddPair('hook', 'patient-view');
+    ShowMessage('Sending:' + #13 + data.GetText);
+    batchId := httpClient.Post(urlRoot + 'forward', data);
+    workerThread := TWorkerThread.Create(batchId);
+    workerThread.Execute;
+  except
+    On e:Exception do begin
+      ShowMessage('Error: ' + e.Message);
+    end;
+  end;
+end;
+
+initialization
+  TAutoObjectFactory.Create(ComServer, TCPRSCDSHooksAdapterCoClass, Class_CPRSCDSHooksAdapterCoClass,
+    ciMultiInstance, tmApartment);
+end.

@@ -1,0 +1,20 @@
+library CPRSCDSHookAdapter;
+
+uses
+  ComServ,
+  CPRSCDSHooksAdapter_TLB in 'CPRSCDSHooksAdapter_TLB.pas',
+  CPRSCDSHookAdapterImpl in 'CPRSCDSHookAdapterImpl.pas' {CPRSCDSHooksAdapterCoClass: CoClass};
+
+exports
+  DllGetClassObject,
+  DllCanUnloadNow,
+  DllRegisterServer,
+  DllUnregisterServer,
+  DllInstall;
+
+{$R *.TLB}
+
+{$R *.RES}
+
+begin
+end.
