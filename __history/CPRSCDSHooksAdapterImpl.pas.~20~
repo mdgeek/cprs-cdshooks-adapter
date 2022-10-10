@@ -11,19 +11,16 @@ uses
 type
   TWorkerThread = class(TThread)
   private
-    batchId: String;
-    procedure HandleResponse(response: String);
+    httpClient: TIdHTTP;
+    procedure Alert(message: String);
   protected
     procedure Execute(); override;
   public
-    constructor Create(batchId: String);
+    constructor Create(data: TStringList);
     destructor Destroy; override;
   end;
 
   TCPRSCDSHooksAdapterCoClass = class(TAutoObject, ICPRSCDSHooksAdapterCoClass, ICPRSExtension)
-  private
-    httpClient: TIdHTTP;
-    procedure Reset;
   protected
     function Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState; const Param1,
           Param2, Param3: WideString; var Data1, Data2: WideString): WordBool;
@@ -37,58 +34,66 @@ implementation
 
 uses ComServ;
 
-var
-    workerThread: TWorkerThread;
-
 const
   urlRoot = 'http://localhost:8080/cdshooks-demo/cdshooks-proxy/';
 
+var
+  cprsHandle: String;
+
 // ============== TWorkerThread ==============
 
-constructor TWorkerThread.Create(batchId: String);
+constructor TWorkerThread.Create(data: TStringList);
 begin
-  Self.batchId := batchId;
-  inherited Create(False);
+  inherited Create(True);
+  FreeOnTerminate := True;
+  httpClient := TIdHTTP.Create();
+  Alert('Thread created');
+  httpClient.Request.ContentType := 'application/x-www-form-urlencoded';
+  httpClient.Request.Accept := 'text/plain';
+  httpClient.Post(urlRoot + 'forward', data);
+  data.Free;
+  Start;
 end;
 
 destructor TWorkerThread.Destroy();
 begin
+  Alert('Thread destroyed');
   inherited;
-  FreeAndNil(httpClient);
+  httpClient.Free;
 end;
 
 procedure TWorkerThread.Execute;
 var
-  httpClient: TIdHTTP;
   hookInstance: String;
   response: String;
 begin
-  HandleResponse('Thread started!');
-  httpClient := TIdHTTP.Create();
+  Alert('Thread started!');
   httpClient.Request.ContentType := 'text/plain';
-  httpClient.Request.Accept := 'text/plain';
 
   while not Terminated do begin
-    hookInstance := httpClient.Get(urlRoot + 'next/' + batchId);
+    httpClient.Request.Accept := 'text/plain';
+    hookInstance := httpClient.Get(urlRoot + 'next/' + cprsHandle);
 
-    if httpClient.ResponseCode / 100 <> 2 then
-      break;
+    if httpClient.Response.ResponseCode <> 200 then break;
 
-    if (httpClient.ResponseCode = 204) then begin
+    if (hookInstance = '') then begin
       Sleep(500);
     end else begin
-      response := httpClient.Get(urlRoot + 'response/' + batchId + '/' + hookInstance);
-      HandleResponse(response);
+      httpClient.Request.Accept := 'application/json';
+      response := httpClient.Get(urlRoot + 'response/' + cprsHandle + '/' + hookInstance);
+      Alert(response);
     end;
 
   end;
+
+  Alert('Thread terminated');
 end;
 
-procedure TWorkerThread.HandleResponse(response: String);
+procedure TWorkerThread.Alert(message: String);
 begin
-  Synchronize(procedure
+  Queue(procedure
   begin
-    ShowMessage('Got this response: ' + response);
+    ShowMessage(message);
   end);
 end;
 
@@ -97,24 +102,11 @@ end;
 procedure TCPRSCDSHooksAdapterCoClass.Initialize;
 begin
   inherited;
-  httpClient := TIdHTTP.Create;
-  httpClient.Request.ContentType := 'application/x-www-form-urlencoded';
-  httpClient.Request.Accept := 'text/plain';
 end;
 
 destructor TCPRSCDSHooksAdapterCoClass.Destroy;
 begin
-  Reset;
   inherited;
-end;
-
-procedure TCPRSCDSHooksAdapterCoClass.Reset;
-begin
-  if (workerThread <> nil) then begin
-    workerThread.Terminate;
-    FreeAndNil(workerThread);
-  end;
-
 end;
 
 function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState;
@@ -122,12 +114,23 @@ function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; cons
           Data2: WideString): WordBool;
 var
   data: TStringList;
-  batchId: String;
+  hookType: String;
 begin
   try
-    Reset;
     data := TStringList.Create;
     data.Delimiter := #10;
+    cprsHandle := CPRSState.Handle;
+    data.Clear;
+
+    if Param2[1] = 'P'
+    then hookType := 'patient-view'
+    else if Param2[1] = 'O'
+    then begin
+      hookType := 'order-select';
+      data.AddPair('orderId', Copy(Param2, 3, 999));
+    end else Exit;
+
+    data.AddPair('hook', hookType);
     data.AddPair('param1', Param1);
     data.AddPair('param2', Param2);
     data.AddPair('param3', Param3);
@@ -139,10 +142,9 @@ begin
     data.AddPair('patientDob', CPRSState.PatientDOB);
     data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
     data.AddPair('locationName', CPRSState.LocationName);
-    data.AddPair('hook', 'patient-view');
+
     ShowMessage('Sending:' + #13 + data.GetText);
-    batchId := httpClient.Post(urlRoot + 'forward', data);
-    workerThread := TWorkerThread.Create(batchId);
+    TWorkerThread.Create(data);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);

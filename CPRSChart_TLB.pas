@@ -12,7 +12,7 @@ unit CPRSChart_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 10/10/2022 10:57:48 AM from Type Library described below.
+// File generated on 10/10/2022 1:03:30 PM from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\dmartin\Desktop\VistA\CPRS\CPRSChart.exe (1)
