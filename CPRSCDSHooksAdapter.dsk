@@ -12,8 +12,8 @@ File_9=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\CCOWEmulator.ridl'
 
 [Modules]
 Module0=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-Module1=Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas
-Module2=default.htm
+Module1=default.htm
+Module2=Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas
 Module3=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl
 Module4=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas
 Count=5
@@ -22,11 +22,11 @@ EditWindowCount=1
 [Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas]
 ModuleType=TSourceModule
 
-[Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas]
-ModuleType=TSourceModule
-
 [default.htm]
 ModuleType=TURLModule
+
+[Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas]
+ModuleType=TSourceModule
 
 [Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl]
 ModuleType=TSourceModule
@@ -78,9 +78,9 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-CursorX=34
-CursorY=35
-TopLine=28
+CursorX=40
+CursorY=77
+TopLine=22
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -145,7 +145,7 @@ StayOnTop=0
 
 [Breakpoints]
 Count=1
-Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',97,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',101,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0

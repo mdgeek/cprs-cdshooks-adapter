@@ -1,14 +1,18 @@
-﻿unit CPRSCDSHooksAdapterImpl;
+unit CPRSCDSHooksAdapterImpl;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
 interface
 
 uses
-  ComObj, Classes, ActiveX, CPRSCDSHooksAdapter_TLB, StdVcl, Dialogs, CPRSChart_TLB;
+  ComObj, Classes, ActiveX, CPRSCDSHooksAdapter_TLB, StdVcl, Dialogs, CPRSChart_TLB,
+  IdBaseComponent, IdComponent, SysUtils, IdTCPConnection, IdTCPClient, IdHTTP,
+  CDSHooksMonitor_TLB;
 
 type
   TCPRSCDSHooksAdapterCoClass = class(TAutoObject, ICPRSCDSHooksAdapterCoClass, ICPRSExtension)
+  private
+    monitor: ICDSHooksMonitorCoClass;
   protected
     function Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState; const Param1,
           Param2, Param3: WideString; var Data1, Data2: WideString): WordBool;
@@ -20,28 +24,20 @@ type
 
 implementation
 
-uses ComServ, IdBaseComponent, IdComponent, SysUtils, Threading,
-  IdTCPConnection, IdTCPClient, IdHTTP;
+uses ComServ, Windows, ShellAPI;
 
-var
-    httpClientMain: TIdHTTP;
-    workerThread: TThread;
+// ============== TCPRSCDSHooksAdapterCoClass ==============
 
 procedure TCPRSCDSHooksAdapterCoClass.Initialize;
 begin
   inherited;
-  httpClientMain := TIdHTTP.Create();
-  httpClientMain.Request.ContentType := 'application/x-www-form-urlencoded';
-  httpClientMain.Request.Accept := 'text/plain';
-  workerThread := TThread.Create(false);
+  monitor := CoCDSHooksMonitorCoClass.Create;
 end;
 
 destructor TCPRSCDSHooksAdapterCoClass.Destroy;
 begin
   inherited;
-  workerThread.Terminate;
-  httpClientMain.Free;
-  httpClientWorker.Free;
+  monitor := nil;
 end;
 
 function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState;
@@ -49,11 +45,21 @@ function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; cons
           Data2: WideString): WordBool;
 var
   data: TStringList;
-  response: String;
+  hookType: String;
 begin
   try
     data := TStringList.Create;
     data.Delimiter := #10;
+
+    if Param2[1] = 'P'
+    then hookType := 'patient-view'
+    else if Param2[1] = 'O'
+    then begin
+      hookType := 'order-select';
+      data.AddPair('orderId', Copy(Param2, 3, 999));
+    end else Exit;
+
+    data.AddPair('hook', hookType);
     data.AddPair('param1', Param1);
     data.AddPair('param2', Param2);
     data.AddPair('param3', Param3);
@@ -65,10 +71,7 @@ begin
     data.AddPair('patientDob', CPRSState.PatientDOB);
     data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
     data.AddPair('locationName', CPRSState.LocationName);
-    data.AddPair('hook', 'patient-view');
-    ShowMessage('Sending:' + #13 + data.GetText);
-    response := httpClientMain.Post('http://localhost:8080/cdshooks-demo/cdshooks-proxy/forward', data);
-    ShowMessage('Received: ' + response);
+    monitor.Submit(data.Text);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);

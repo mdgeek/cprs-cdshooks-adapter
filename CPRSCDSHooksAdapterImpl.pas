@@ -26,6 +26,9 @@ implementation
 
 uses ComServ, Windows, ShellAPI;
 
+const
+  URL_ROOT = 'http://localhost:8080/cdshooks-demo/cdshooks-proxy/';
+
 // ============== TCPRSCDSHooksAdapterCoClass ==============
 
 procedure TCPRSCDSHooksAdapterCoClass.Initialize;
@@ -71,6 +74,7 @@ begin
     data.AddPair('patientDob', CPRSState.PatientDOB);
     data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
     data.AddPair('locationName', CPRSState.LocationName);
+    data.AddPair('endpoint', URL_ROOT);
     monitor.Submit(data.Text);
   except
     On e:Exception do begin
