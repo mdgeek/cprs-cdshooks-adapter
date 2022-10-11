@@ -87,6 +87,7 @@
         <DCCReference Include="CPRSCDSHooksAdapterImpl.pas">
             <CoClasses>CPRSCDSHooksAdapterCoClass</CoClasses>
         </DCCReference>
+        <DCCReference Include="CDSHooksMonitor_TLB.pas"/>
         <RidlCompile Include="CPRSCDSHooksAdapter.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

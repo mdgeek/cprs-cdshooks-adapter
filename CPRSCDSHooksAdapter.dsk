@@ -1,34 +1,47 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\SOURCE\RTL\SYS\System.pas',0,1,49,1,12,0,0,,
-File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\Indy10\Protocols\IdHTTP.pas',0,1,1057,1,1078,0,0,,
-File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Win.ComObj.pas',0,1,765,1,786,0,0,,
-File_3=TSourceModule,'Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHookService.pas',0,1,10,39,11,0,0,,
-File_4=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\ServerModule.pas',0,1,37,1,1,0,0,,
-File_5=TSourceModule,'\\Mac\Home\workspace\ccow-emulator\CCOWEmulator\Participant.pas',0,1,13,36,31,0,0,,
-File_6=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\CCOWEmulator.ridl',0,1,1,1,1,0,0,,
+File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\rtl\win\Winapi.ShellAPI.pas',0,1,1775,1,1786,0,0,,
+File_1=TSourceModule,'Y:\workspace\cprs-cdshooks-adapter\CPRSChart_TLB.pas',0,1,138,14,149,0,0,,
+File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\Indy10\Protocols\IdHTTP.pas',0,1,2438,1,2449,0,0,,
+File_3=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Classes.pas',0,1,16068,1,16089,0,0,,
+File_4=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\SOURCE\RTL\SYS\System.pas',0,1,49,1,12,0,0,,
+File_5=TSourceModule,'c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Win.ComObj.pas',0,1,765,1,786,0,0,,
+File_6=TSourceModule,'Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHookService.pas',0,1,10,39,11,0,0,,
+File_7=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\ServerModule.pas',0,1,37,1,1,0,0,,
+File_8=TSourceModule,'\\Mac\Home\workspace\ccow-emulator\CCOWEmulator\Participant.pas',0,1,13,36,31,0,0,,
+File_9=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\CCOWEmulator.ridl',0,1,1,1,1,0,0,,
 
 [Modules]
 Module0=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-Module1=default.htm
-Module2=c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Classes.pas
-Count=3
+Module1=Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas
+Module2=default.htm
+Module3=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl
+Module4=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas
+Count=5
 EditWindowCount=1
 
 [Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas]
 ModuleType=TSourceModule
 
+[Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas]
+ModuleType=TSourceModule
+
 [default.htm]
 ModuleType=TURLModule
 
-[c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Classes.pas]
+[Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl]
+ModuleType=TSourceModule
+
+[Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas]
 ModuleType=TSourceModule
 
 [EditWindow0]
-ViewCount=3
+ViewCount=5
 CurrentEditView=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
 View0=0
 View1=1
 View2=2
+View3=3
+View4=4
 PercentageSizes=1
 Create=1
 Visible=1
@@ -65,9 +78,9 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-CursorX=28
-CursorY=68
-TopLine=49
+CursorX=34
+CursorY=35
+TopLine=28
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -75,14 +88,36 @@ EditViewName=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
 
 [View2]
 CustomEditViewType=TEditView
-Module=c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Classes.pas
+Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl
 CursorX=1
-CursorY=16214
-TopLine=16140
+CursorY=1
+TopLine=1
 LeftCol=1
 Elisions=
 Bookmarks=
-EditViewName=c:\program files (x86)\embarcadero\studio\21.0\source\rtl\common\System.Classes.pas
+EditViewName=CodeGear.RIDLDesignerView
+
+[View3]
+CustomEditViewType=TEditView
+Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas
+CursorX=1
+CursorY=1
+TopLine=85
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas
+
+[View4]
+CustomEditViewType=TEditView
+Module=Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas
+CursorX=47
+CursorY=105
+TopLine=89
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=Y:\workspace\cprs-cdshooks-adapter\CDSHooksMonitor_TLB.pas
 
 [Watches]
 Count=0
@@ -98,21 +133,19 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=219
 LRDockWidth=13601
 Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=3
-Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',182,'',0,1,'',1,0,0,'',1,'','','',0,''
-Breakpoint1='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',23,'',0,1,'',1,0,0,'',1,'','','',0,''
-Breakpoint2='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',28,'',0,1,'',1,0,0,'',1,'','','',0,''
+Count=1
+Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',97,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -226,11 +259,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=8251
+Height=6087
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=8251
+ClientHeight=6087
 TBDockHeight=5956
 LRDockWidth=2512
 Dockable=1
@@ -267,11 +300,11 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=415
 LRDockWidth=4952
 Dockable=1
@@ -286,11 +319,11 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=219
 LRDockWidth=7411
 Dockable=1
@@ -309,11 +342,11 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=1541
 LRDockWidth=3482
 Dockable=1
@@ -328,11 +361,11 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=2066
 LRDockWidth=3482
 Dockable=1
@@ -347,11 +380,11 @@ State=0
 Left=0
 Top=0
 Width=2339
-Height=1180
+Height=940
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2339
-ClientHeight=1180
+ClientHeight=940
 TBDockHeight=2317
 LRDockWidth=2821
 Dockable=1
@@ -412,11 +445,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=8251
+Height=6087
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=8251
+ClientHeight=6087
 TBDockHeight=4885
 LRDockWidth=7149
 Dockable=1
@@ -428,8 +461,8 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=360
-Top=656
+Left=334
+Top=741
 Width=2857
 Height=3213
 MaxLeft=-1
@@ -507,11 +540,11 @@ State=0
 Left=0
 Top=0
 Width=3821
-Height=1115
+Height=1071
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1115
+ClientHeight=1071
 TBDockHeight=1541
 LRDockWidth=8744
 Dockable=1
@@ -552,11 +585,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=8251
+Height=6087
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=8251
+ClientHeight=6087
 TBDockHeight=4885
 LRDockWidth=5310
 Dockable=1
@@ -592,8 +625,8 @@ Create=1
 Visible=0
 Docked=1
 State=0
-Left=0
-Top=28
+Left=8
+Top=8
 Width=2339
 Height=1486
 MaxLeft=-1
@@ -619,12 +652,12 @@ State=0
 Left=832
 Top=28
 Width=3821
-Height=1421
+Height=1377
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=3821
-ClientHeight=1421
-TBDockHeight=1421
+ClientHeight=1377
+TBDockHeight=1377
 LRDockWidth=3821
 Dockable=1
 StayOnTop=0
