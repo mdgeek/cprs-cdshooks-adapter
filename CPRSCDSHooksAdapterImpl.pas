@@ -1,18 +1,11 @@
 unit CPRSCDSHooksAdapterImpl;
-
 {$WARN SYMBOL_PLATFORM OFF}
-
 interface
-
 uses
   ComObj, Classes, ActiveX, CPRSCDSHooksAdapter_TLB, StdVcl, Dialogs, CPRSChart_TLB,
-  IdBaseComponent, IdComponent, SysUtils, IdTCPConnection, IdTCPClient, IdHTTP,
-  CDSHooksMonitor_TLB;
-
+  IdBaseComponent, IdComponent, SysUtils, IdTCPConnection, IdTCPClient, IdHTTP;
 type
   TCPRSCDSHooksAdapterCoClass = class(TAutoObject, ICPRSCDSHooksAdapterCoClass, ICPRSExtension)
-  private
-    monitor: ICDSHooksMonitorCoClass;
   protected
     function Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState; const Param1,
           Param2, Param3: WideString; var Data1, Data2: WideString): WordBool;
@@ -31,16 +24,27 @@ const
 
 // ============== TCPRSCDSHooksAdapterCoClass ==============
 
+function toHWND(handle: String): HWND;
+var
+  i: Integer;
+begin
+  try
+    i := Pos('x', handle);
+    handle := '$' + Copy(handle, i + 1);
+    Result := StrToInt(handle);
+  except
+    Result := 0;
+  end;
+end;
+
 procedure TCPRSCDSHooksAdapterCoClass.Initialize;
 begin
   inherited;
-  monitor := CoCDSHooksMonitorCoClass.Create;
 end;
 
 destructor TCPRSCDSHooksAdapterCoClass.Destroy;
 begin
   inherited;
-  monitor := nil;
 end;
 
 function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; const CPRSState: ICPRSState;
@@ -49,11 +53,12 @@ function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; cons
 var
   data: TStringList;
   hookType: String;
+  url: String;
+  httpClient: TIdHTTP;
 begin
   try
     data := TStringList.Create;
     data.Delimiter := #10;
-
     if Param2[1] = 'P'
     then hookType := 'patient-view'
     else if Param2[1] = 'O'
@@ -61,7 +66,6 @@ begin
       hookType := 'order-select';
       data.AddPair('orderId', Copy(Param2, 3, 999));
     end else Exit;
-
     data.AddPair('hook', hookType);
     data.AddPair('param1', Param1);
     data.AddPair('param2', Param2);
@@ -75,14 +79,16 @@ begin
     data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
     data.AddPair('locationName', CPRSState.LocationName);
     data.AddPair('endpoint', URL_ROOT);
-    monitor.Submit(data.Text);
+    httpClient := TIdHTTP.Create;
+    httpClient.Post(URL_ROOT + 'forward', data);
+    url := URL_ROOT + 'static/va-cdshooks-client/?handle=' + CPRSState.Handle;
+    ShellExecute(toHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);
     end;
   end;
 end;
-
 initialization
   TAutoObjectFactory.Create(ComServer, TCPRSCDSHooksAdapterCoClass, Class_CPRSCDSHooksAdapterCoClass,
     ciMultiInstance, tmApartment);
