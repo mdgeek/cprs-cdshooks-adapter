@@ -19,10 +19,34 @@ implementation
 
 uses ComServ, Windows, ShellAPI;
 
-const
-  URL_ROOT = 'http://localhost:8080/cdshooks-demo/cdshooks-proxy/';
+function getSystemParams(broker: ICPRSBroker): TStringList;
+var
+  rpcResult: String;
+begin
+  Result := TStringList.Create;
+  Result.Delimiter := #10;
+  broker.SetContext('CDSP');
+  broker.ClearParameters;
+  broker.CallRPC('CDSP GETPARAMS');
+  rpcResult := broker.Results;
+  rpcResult := StringReplace(rpcResult, 'CDSP ', '', [rfReplaceAll]);
+  rpcResult := LowerCase(rpcResult);
+  rpcResult := StringReplace(rpcResult, ' ', '_', [rfReplaceAll]);
+  Result.Text := rpcResult;
+end;
 
-// ============== TCPRSCDSHooksAdapterCoClass ==============
+function pathJoin(first: String; second: String): String;
+begin
+  if not first.EndsWith('/') then first := first + '/';
+  if second.StartsWith('/') then second := second.Substring(2);
+  Result := first + second;
+end;
+
+function appendQueryString(path: String; qs: String): String;
+begin
+  if path.Contains('?') then Result := path + '&' + qs
+  else Result := path + '?' + qs;
+end;
 
 function toHWND(handle: String): HWND;
 var
@@ -52,9 +76,11 @@ function TCPRSCDSHooksAdapterCoClass.Execute(const CPRSBroker: ICPRSBroker; cons
           Data2: WideString): WordBool;
 var
   data: TStringList;
+  params: TStringList;
   hookType: String;
   url: String;
   httpClient: TIdHTTP;
+  endPoint: String;
 begin
   try
     data := TStringList.Create;
@@ -78,17 +104,24 @@ begin
     data.AddPair('patientDob', CPRSState.PatientDOB);
     data.AddPair('locationId', IntToStr(CPRSState.LocationIEN));
     data.AddPair('locationName', CPRSState.LocationName);
-    data.AddPair('endpoint', URL_ROOT);
+    params := getSystemParams(CPRSBroker);
+    data.addStrings(params);
+    endpoint := data.Values['cdshook_proxy_endpoint'];
+    ShowMessage(data.Text);
     httpClient := TIdHTTP.Create;
-    httpClient.Post(URL_ROOT + 'forward', data);
-    url := URL_ROOT + 'static/va-cdshooks-client?noclose&handle=' + CPRSState.Handle;
-    ShellExecute(0, 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
+    httpClient.Post(pathJoin(endpoint, 'forward'), data);
+    url := appendQueryString(data.Values['cdshook_client_endpoint'], 'handle=' + CPRSState.Handle);
+    ShellExecute(ToHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);
     end;
   end;
+
+  FreeAndNil(data);
+  FreeAndNil(params);
 end;
+
 initialization
   TAutoObjectFactory.Create(ComServer, TCPRSCDSHooksAdapterCoClass, Class_CPRSCDSHooksAdapterCoClass,
     ciMultiInstance, tmApartment);
