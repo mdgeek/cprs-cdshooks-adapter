@@ -81,8 +81,8 @@ begin
     data.AddPair('endpoint', URL_ROOT);
     httpClient := TIdHTTP.Create;
     httpClient.Post(URL_ROOT + 'forward', data);
-    url := URL_ROOT + 'static/va-cdshooks-client/?handle=' + CPRSState.Handle;
-    ShellExecute(toHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
+    url := URL_ROOT + 'static/va-cdshooks-client?noclose&handle=' + CPRSState.Handle;
+    ShellExecute(0, 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);

@@ -74,9 +74,9 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-CursorX=49
-CursorY=83
-TopLine=55
+CursorX=58
+CursorY=84
+TopLine=64
 LeftCol=1
 Elisions=
 Bookmarks=
