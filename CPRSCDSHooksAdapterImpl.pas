@@ -15,10 +15,11 @@ type
     destructor Destroy; override;
   end;
 implementation
-uses ComServ, Windows, ShellAPI;
+uses ComServ, Windows, ShellAPI, StrUtils;
 function getSystemParams(broker: ICPRSBroker; state: ICPRSState): TStringList;
 var
   rpcResult: String;
+  i: Integer;
 begin
   Result := TStringList.Create;
   Result.Delimiter := #10;
@@ -32,6 +33,12 @@ begin
   rpcResult := LowerCase(rpcResult);
   rpcResult := StringReplace(rpcResult, ' ', '_', [rfReplaceAll]);
   Result.Text := rpcResult;
+  i := Result.IndexOfName('debug_user');
+
+  if i > -1 then begin
+    if Result.ValueFromIndex[i] = state.UserDUZ then Result.AddPair('debug', 'true');
+    Result.Delete(i);
+  end;
 end;
 
 function pathJoin(first: String; second: String): String;
@@ -77,6 +84,7 @@ var
   httpClient: TIdHTTP;
   endPoint: String;
   qs: String;
+  otherParams: String;
 begin
   try
     data := TStringList.Create;
@@ -103,10 +111,12 @@ begin
     params := getSystemParams(CPRSBroker, CPRSState);
     data.addStrings(params);
     endpoint := data.Values['cdshook_proxy_endpoint'];
-    ShowMessage(data.Text);
+
+    if data.Values['debug'] <> '' then ShowMessage(data.Text);
     httpClient := TIdHTTP.Create;
     httpClient.Post(pathJoin(endpoint, 'forward'), data);
-    qs := Format('handle=%s&proxy=%s', [CPRSState.Handle, data.values['cdshook_proxy_endpoint']]);
+    otherParams := IfThen(data.Values['debug'] = 'true','debug&', '');
+    qs := Format('%shandle=%s&proxy=%s', [otherParams, CPRSState.Handle, data.values['cdshook_proxy_endpoint']]);
     url := appendQueryString(data.Values['cdshook_client_endpoint'], qs);
     ShellExecute(ToHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
   except

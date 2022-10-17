@@ -12,22 +12,22 @@ File_9=TSourceModule,'\\Mac\Home\workspace\ccow-emulator\CCOWEmulator\Participan
 File_10=TSourceModule,'Y:\workspace\ccow-emulator\CCOWEmulator\CCOWEmulator.ridl',0,1,1,1,1,0,0,,
 
 [Modules]
-Module0=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-Module1=Y:\workspace\cprs-cdshooks-adapter\CPRSChart_TLB.pas
-Module2=default.htm
+Module0=default.htm
+Module1=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
+Module2=Y:\workspace\cprs-cdshooks-adapter\CPRSChart_TLB.pas
 Module3=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas
 Module4=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter.ridl
 Count=5
 EditWindowCount=1
+
+[default.htm]
+ModuleType=TURLModule
 
 [Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas]
 ModuleType=TSourceModule
 
 [Y:\workspace\cprs-cdshooks-adapter\CPRSChart_TLB.pas]
 ModuleType=TSourceModule
-
-[default.htm]
-ModuleType=TURLModule
 
 [Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter_TLB.pas]
 ModuleType=TSourceModule
@@ -37,7 +37,7 @@ ModuleType=TSourceModule
 
 [EditWindow0]
 ViewCount=5
-CurrentEditView=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
+CurrentView=0
 View0=0
 View1=1
 View2=2
@@ -61,13 +61,13 @@ BorlandEditorCodeExplorer=BorlandEditorCodeExplorer@EditWindow0
 TopPanelSize=0
 LeftPanelSize=1893
 LeftPanelClients=PropertyInspector,DockSite3
-LeftPanelData=00000800010100000000170F0000000000000165070000000000000100000000540E000009000000446F636B53697465330100000000AF1900001100000050726F7065727479496E73706563746F72FFFFFFFF
+LeftPanelData=00000800010100000000DB120000000000000165070000000000000100000000540E000009000000446F636B53697465330100000000192000001100000050726F7065727479496E73706563746F72FFFFFFFF
 RightPanelSize=2000
 RightPanelClients=DockSite2,DockSite4
-RightPanelData=00000800010100000000170F00000000000001D00700000000000001000000004912000009000000446F636B53697465320100000000AF19000009000000446F636B5369746534FFFFFFFF
-BottomPanelSize=1560
+RightPanelData=00000800010100000000DB1200000000000001D00700000000000001000000004912000009000000446F636B536974653201000000001920000009000000446F636B5369746534FFFFFFFF
+BottomPanelSize=0
 BottomPanelClients=MessageView,DockSite1
-BottomPanelData=0000080001020100000009000000446F636B5369746531DB410000000000000218060000000000000100000000DB4100000F0000004D65737361676556696577466F726DFFFFFFFF
+BottomPanelData=000008000102020000000F0000004D65737361676556696577466F726D09000000446F636B53697465311534000000000000022206000000000000FFFFFFFF
 BottomMiddlePanelSize=0
 BottomMiddlePanelClients=DockSite0,GraphDrawingModel
 BottomMiddelPanelData=0000080001020200000009000000446F636B536974653010000000477261706844726177696E67566965779B1D00000000000002F706000000000000FFFFFFFF
@@ -79,9 +79,9 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas
-CursorX=22
-CursorY=20
-TopLine=10
+CursorX=40
+CursorY=115
+TopLine=94
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -146,8 +146,8 @@ StayOnTop=0
 
 [Breakpoints]
 Count=2
-Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',157,'',0,1,'',1,0,0,'',1,'','','',0,''
-Breakpoint1='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',23,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint0='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',167,'',0,1,'',1,0,0,'',1,'','','',0,''
+Breakpoint1='Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapterImpl.pas',24,'',0,1,'',1,0,0,'',1,'','','',0,''
 
 [EmbarcaderoWin32Debugger_AddressBreakpoints]
 Count=0
@@ -197,18 +197,18 @@ StayOnTop=0
 [MessageView]
 PercentageSizes=1
 Create=1
-Visible=1
+Visible=0
 Docked=1
 State=0
 Left=0
-Top=28
-Width=9905
-Height=1377
+Top=0
+Width=2768
+Height=1421
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=9905
-ClientHeight=1377
-TBDockHeight=1377
+ClientWidth=2768
+ClientHeight=1421
+TBDockHeight=1421
 LRDockWidth=2768
 Dockable=1
 StayOnTop=0
@@ -222,11 +222,11 @@ State=0
 Left=0
 Top=0
 Width=2000
-Height=1738
+Height=3508
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=1738
+ClientHeight=3508
 TBDockHeight=7148
 LRDockWidth=2000
 Dockable=1
@@ -241,11 +241,11 @@ State=0
 Left=0
 Top=390
 Width=1893
-Height=2831
+Height=4601
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1893
-ClientHeight=2831
+ClientHeight=4601
 TBDockHeight=9016
 LRDockWidth=1893
 Dockable=1
@@ -726,11 +726,11 @@ State=0
 Left=0
 Top=490
 Width=2000
-Height=1738
+Height=3508
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=2000
-ClientHeight=1738
+ClientHeight=3508
 TBDockHeight=9016
 LRDockWidth=2000
 Dockable=1
