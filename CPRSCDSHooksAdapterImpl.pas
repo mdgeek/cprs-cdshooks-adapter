@@ -85,6 +85,7 @@ var
   endPoint: String;
   qs: String;
   otherParams: String;
+  showCommand: Integer;
 begin
   try
     data := TStringList.Create;
@@ -112,13 +113,19 @@ begin
     data.addStrings(params);
     endpoint := data.Values['cdshook_proxy_endpoint'];
 
-    if data.Values['debug'] <> '' then ShowMessage(data.Text);
+    if data.Values['debug'] <> '' then begin
+      showCommand := SW_SHOWNORMAL;
+      ShowMessage(data.Text);
+    end else begin
+      showCommand := SW_SHOWMINIMIZED;
+    end;
+
     httpClient := TIdHTTP.Create;
     httpClient.Post(pathJoin(endpoint, 'forward'), data);
     otherParams := IfThen(data.Values['debug'] = 'true','debug&', '');
     qs := Format('%shandle=%s&proxy=%s', [otherParams, CPRSState.Handle, data.values['cdshook_proxy_endpoint']]);
     url := appendQueryString(data.Values['cdshook_client_endpoint'], qs);
-    ShellExecute(ToHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, SW_SHOWNORMAL);
+    ShellExecute(ToHWND(CPRSState.Handle), 'open', PWideChar(url), nil, nil, showCommand);
   except
     On e:Exception do begin
       ShowMessage('Error: ' + e.Message);

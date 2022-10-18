@@ -12,7 +12,7 @@ unit CPRSCDSHooksAdapter_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 10/17/2022 5:20:08 PM from Type Library described below.
+// File generated on 10/17/2022 5:35:51 PM from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: Y:\workspace\cprs-cdshooks-adapter\CPRSCDSHooksAdapter (1)
